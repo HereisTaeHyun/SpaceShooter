@@ -524,6 +524,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 100046, guid: f3cd25b3bf53c4adaaf087d862e435e6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 400046, guid: f3cd25b3bf53c4adaaf087d862e435e6, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -587,6 +591,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9c82cff16e57342a2ed82385274986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 10
 --- !u!1001 &1724125819
 PrefabInstance:
   m_ObjectHideFlags: 0
