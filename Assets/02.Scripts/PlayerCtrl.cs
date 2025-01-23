@@ -5,27 +5,57 @@ using UnityEngine;
 public class PlayerCtrl : MonoBehaviour
 {
     private Transform tr;
+    private Animation anim;
     public float moveSpeed = 10f;
     public float turnSpeed = 80f;
     // Start is called before the first frame update
     void Start()
     {
         tr = GetComponent<Transform>();
+        anim = GetComponent<Animation>();
+        anim.Play("Idle");
     }
 
     // Update is called once per frame
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
+        float h = Input.GetAxis("Horizontal");
         float r = Input.GetAxis("Mouse X");
 
-        Vector3 moveDirction = (Vector3.forward * v) + (Vector3.right * h);
-        tr.Translate(moveDirction.normalized * Time.deltaTime * moveSpeed);
+        // h, v 값에 따라 이동
+        Vector3 moveDirection = (Vector3.forward * v) + (Vector3.right * h);
+        tr.Translate(moveDirection.normalized * Time.deltaTime * moveSpeed);
 
-        // Vector3 moveDirction = new Vector3(h, 0, v);
-        // tr.Translate(moveDirction.normalized * Time.deltaTime * moveSpeed);
+        // 마우스 입력 r을 받아 Vector3.up을 기준으로 변환
+        tr.Rotate(Vector3.up * r * turnSpeed * Time.deltaTime);
 
-        tr.Rotate(Vector3.up * turnSpeed * Time.deltaTime * r);
+        // 주인공 애니메이션 설정
+        PlayerAnim(h, v);
+    }
+
+    void PlayerAnim(float h, float v)
+    {
+        //CrossFade의 인자는 어떤 애니메이션으로 바꿀지, 변경되는 시간을 의미
+        if(v >= 0.1f)
+        {
+            anim.CrossFade("RunF", 0.25f);
+        }
+        else if(v <= -.01f)
+        {
+            anim.CrossFade("RunB", 0.25f);
+        }
+        else if(h >= 0.1f)
+        {
+            anim.CrossFade("RunR", 0.25f);
+        }
+        else if(h <= -0.1f)
+        {
+            anim.CrossFade("RunL", 0.25f);
+        }
+        else 
+        {
+            anim.CrossFade("Idle", 0.25f);
+        }
     }
 }
