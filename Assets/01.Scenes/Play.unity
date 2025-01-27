@@ -707,8 +707,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 1672723258}
-  distance: 10
+  distance: 3
   height: 2
+  damping: 0.1
+  targetOffset: 2
 --- !u!1001 &1672723255
 PrefabInstance:
   m_ObjectHideFlags: 0
