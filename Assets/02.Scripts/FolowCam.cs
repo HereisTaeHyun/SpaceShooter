@@ -24,7 +24,7 @@ public class FolowCam : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        // 카메파 pos를 target의 distance 뒤, height 위에 배치
+        // 카메라 pos를 target의 distance 뒤, height 위에 배치
         Vector3 pos = targetTransform.position + (-targetTransform.forward * distance) + (Vector3.up * height);
 
         // 구면 선형 보간으로 위치 변경
