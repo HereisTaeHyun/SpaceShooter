@@ -12,7 +12,7 @@ public class BulletCtrl : MonoBehaviour
     {
         // rigidbody 연결 후 전진 방향으로 힘 가하기
         rb = GetComponent<Rigidbody>();
-        rb.AddRelativeForce(transform.forward * force);
+        rb.AddForce(transform.forward * force);
     }
 
     // Update is called once per frame
