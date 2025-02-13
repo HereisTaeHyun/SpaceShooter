@@ -41,6 +41,18 @@ public class FireCtrl : MonoBehaviour
 
     IEnumerator ShowMuzzleFlash()
     {
+        // offset 좌표값 랜덤 생성
+        Vector2 offset = new Vector2(Random.Range(0, 2), Random.Range(0, 2)) * 0.5f;
+        muzzleFlash.material.mainTextureOffset = offset;
+
+        // 각도 조절
+        float angle = Random.Range(0, 360);
+        muzzleFlash.transform.localRotation = Quaternion.Euler(angle, angle, angle);
+
+        // 크기 조절
+        float scale = Random.Range(1.0f, 2.0f);
+        muzzleFlash.transform.localScale = Vector3.one * scale;
+
         // muzzleFlash 활성화
         muzzleFlash.enabled = true;
         // 0.2f 동안 메인 루프에 제어권 넘김
