@@ -5,21 +5,98 @@ using UnityEngine.AI;
 
 public class MonsterCtrl : MonoBehaviour
 {
+    public enum State
+    {
+        IDLE,
+        TRACE,
+        ATTACK,
+        DIE,
+    }
+    public State state = State.IDLE;
+    public float traceDistance = 10.0f;
+    public float attackDistance = 2.0f;
+    public bool isDie = false;
+
     private Transform monsterTr;
     private Transform playerTr;
     private NavMeshAgent agent;
+    private Animator animator;
     // Start is called before the first frame update
     void Start()
     {
+        // MonsterTr, PlayerTr을 agent의 destination에 할당
         monsterTr = GetComponent<Transform>();
         playerTr = GameObject.FindGameObjectWithTag("PLAYER").GetComponent<Transform>();
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+
+        // 몬스터 상태 체크 코루틴 호출
+        StartCoroutine(CheckMonsterState());
+        StartCoroutine(MonsterAction());
     }
 
     // Update is called once per frame
     void Update()
     {
-        // MonsterTr, PlayerTr을 agent의 destination에 할당
-        agent.destination = playerTr.position;
+    }
+
+    private IEnumerator CheckMonsterState()
+    {
+        while(isDie != true)
+        {
+            yield return new WaitForSeconds(0.3f);
+
+            float distance = Vector3.Distance(playerTr.position, monsterTr.position);
+            if(distance <= attackDistance)
+            {
+                state = State.ATTACK;
+            }
+            else if(distance <= traceDistance)
+            {
+                state = State.TRACE;
+            }
+            else
+            {
+                state = State.IDLE;
+            }
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if(state == State.TRACE)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, traceDistance);
+        }
+
+        if(state == State.ATTACK)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attackDistance);
+        }
+    }
+
+    private IEnumerator MonsterAction()
+    {
+        while(isDie != true)
+        {
+            switch(state)
+            {
+                case State.IDLE:
+                    agent.isStopped = true;
+                    animator.SetBool("isTrace", false);
+                    break;
+                case State.TRACE:
+                    agent.SetDestination(playerTr.position);
+                    animator.SetBool("isTrace", true);
+                    agent.isStopped = false;
+                    break;
+                case State.ATTACK:
+                    break;
+                case State.DIE:
+                    break;
+            }
+            yield return new WaitForSeconds(0.3f);
+        }
     }
 }

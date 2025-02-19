@@ -555,6 +555,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 954c1ddcd66a08a49b4f4371c548fb58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
+  traceDistance: 10
+  attackDistance: 2
+  isDie: 0
 --- !u!1001 &653104951
 PrefabInstance:
   m_ObjectHideFlags: 0
