@@ -14,13 +14,17 @@ public class MonsterCtrl : MonoBehaviour
     }
     public State state = State.IDLE;
     public float traceDistance = 10.0f;
-    public float attackDistance = 2.0f;
+    public float attackDistance = 2f;
     public bool isDie = false;
 
     private Transform monsterTr;
     private Transform playerTr;
     private NavMeshAgent agent;
     private Animator animator;
+
+    private readonly int hashTrace = Animator.StringToHash("IsTrace");
+    private readonly int hashAttack = Animator.StringToHash("IsAttack");
+    private readonly int hashHit = Animator.StringToHash("Hit");
     // Start is called before the first frame update
     void Start()
     {
@@ -84,19 +88,30 @@ public class MonsterCtrl : MonoBehaviour
             {
                 case State.IDLE:
                     agent.isStopped = true;
-                    animator.SetBool("isTrace", false);
+                    animator.SetBool(hashTrace, false);
                     break;
                 case State.TRACE:
                     agent.SetDestination(playerTr.position);
-                    animator.SetBool("isTrace", true);
+                    animator.SetBool(hashTrace, true);
+                    animator.SetBool(hashAttack, false);
                     agent.isStopped = false;
                     break;
                 case State.ATTACK:
+                    animator.SetBool(hashAttack, true);
                     break;
                 case State.DIE:
                     break;
             }
             yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.collider.CompareTag("BULLET"))
+        {
+            Destroy(collision.gameObject);
+            animator.SetTrigger(hashHit);
         }
     }
 }
