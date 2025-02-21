@@ -22,6 +22,9 @@ public class MonsterCtrl : MonoBehaviour
     private NavMeshAgent agent;
     private Animator animator;
 
+    // 혈흔 효과 프리펩
+    private GameObject bloodEffect;
+
     private readonly int hashTrace = Animator.StringToHash("IsTrace");
     private readonly int hashAttack = Animator.StringToHash("IsAttack");
     private readonly int hashHit = Animator.StringToHash("Hit");
@@ -33,6 +36,7 @@ public class MonsterCtrl : MonoBehaviour
         playerTr = GameObject.FindGameObjectWithTag("PLAYER").GetComponent<Transform>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        bloodEffect = Resources.Load<GameObject>("BloodSprayEffect");
 
         // 몬스터 상태 체크 코루틴 호출
         StartCoroutine(CheckMonsterState());
@@ -108,10 +112,24 @@ public class MonsterCtrl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // 총에 맞으면 효과 생성
         if(collision.collider.CompareTag("BULLET"))
         {
             Destroy(collision.gameObject);
             animator.SetTrigger(hashHit);
+
+            // 총알의 충돌 지점에 혈흔 효과 생성
+            Vector3 pos = collision.GetContact(0).point;
+            Quaternion rot = Quaternion.LookRotation(-collision.GetContact(0).normal);
+            ShowBloodEffect(pos, rot);
         }
+    }
+
+    private void ShowBloodEffect(Vector3 pos, Quaternion rot)
+    {
+        // bloodEffect를 pos, rot에 monsterTr 자식으로 붙임
+        // 특정 tranform의 자식으로 붙이는 방식은 매우 유효, 하이라키 정리 및 같이 이동하기 편함
+        GameObject blood = Instantiate<GameObject>(bloodEffect, pos, rot, monsterTr);
+        Destroy(blood, 1.0f);
     }
 }
