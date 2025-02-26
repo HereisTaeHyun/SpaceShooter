@@ -10,6 +10,7 @@ public class FireCtrl : MonoBehaviour
     public Transform firePos;
     public AudioClip fireSfx;
 
+    private bool isPlayerDie;
     // 오디오 컴포넌트
     private new AudioSource audio;
     private MeshRenderer muzzleFlash;
@@ -23,9 +24,28 @@ public class FireCtrl : MonoBehaviour
 
         // 시작시에는 총구 화염 안보여야 함
         muzzleFlash.enabled = false; 
+
+        isPlayerDie = false;
     }
+    void OnEnable()
+    {
+        PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+    }
+    void OnDisable()
+    {
+        PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
+    }
+    public void OnPlayerDie() // 주인공이 사망시 공격 기능 비활성화 위한 메서드
+    {
+        isPlayerDie = true;
+    }
+
     void Update()
     {
+        if(isPlayerDie == true)
+        {
+            return;
+        }
         if(Input.GetMouseButtonDown(0))
         {
             Fire();
