@@ -50,6 +50,17 @@ public class MonsterCtrl : MonoBehaviour
     {
     }
 
+    // OnEnable, OnDisable에서 이벤트 함수 연결 및 해제
+    void OnEnable()
+    {
+        PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+    }
+
+    void OnDisable()
+    {
+        PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
+    }
+
     private IEnumerator CheckMonsterState()
     {
         while(isDie != true)

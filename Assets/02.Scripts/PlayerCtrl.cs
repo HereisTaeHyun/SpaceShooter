@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class PlayerCtrl : MonoBehaviour
 {
+    #region private
     private Transform tr;
     private Animation anim;
     private readonly float initHP = 100.0f; // 초기 생명 값
     private const float DAMAGEHP = 10.0f;
+    #endregion
 
+    #region public
     public float currentHP;
     public float moveSpeed = 10f;
     public float turnSpeed = 80f;
+
+    // void PlayerDieHandler() 형식의 메서드들을 event PlayerDieHandler에 등록
+    // event가 시행되면 등록 메서드들이 모두 수행되게 함
+    public delegate void PlayerDieHandler();
+    public static event PlayerDieHandler OnPlayerDie;
+    #endregion
     // Start is called before the first frame update
     IEnumerator Start() //Start는 void 대신 IEnumerator로 사용 가능
     {
@@ -84,12 +93,14 @@ public class PlayerCtrl : MonoBehaviour
 
     private void PlayerDie()
     {
-        
-        GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
+        // GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
 
-        foreach(GameObject monster in monsters)
-        {
-            monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
-        }
+        // foreach(GameObject monster in monsters)
+        // {
+        //     monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+        // }
+
+        // 주인공 사망 이벤트 호출
+        OnPlayerDie();
     }
 }
