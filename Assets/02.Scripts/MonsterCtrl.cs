@@ -12,24 +12,34 @@ public class MonsterCtrl : MonoBehaviour
         ATTACK,
         DIE,
     }
+
+    #region public
     public State state = State.IDLE;
     public float traceDistance = 10.0f;
     public float attackDistance = 2f;
     public bool isDie = false;
+    #endregion
 
+    #region private
+    private const int DAMAGE = 10;
     private Transform monsterTr;
     private Transform playerTr;
     private NavMeshAgent agent;
     private Animator animator;
+    private int hp = 100;
 
     // 혈흔 효과 프리펩
     private GameObject bloodEffect;
+    #endregion
 
+    #region Hash
     private readonly int hashTrace = Animator.StringToHash("IsTrace");
     private readonly int hashAttack = Animator.StringToHash("IsAttack");
     private readonly int hashHit = Animator.StringToHash("Hit");
     private readonly int hashPlayerDie = Animator.StringToHash("PlayerDie");
     private readonly int hashSpeed = Animator.StringToHash("Speed");
+    private readonly int hashDie = Animator.StringToHash("Die");
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
@@ -66,6 +76,11 @@ public class MonsterCtrl : MonoBehaviour
         while(isDie != true)
         {
             yield return new WaitForSeconds(0.3f);
+
+            if(state == State.DIE)
+            {
+                yield break;
+            }
 
             float distance = Vector3.Distance(playerTr.position, monsterTr.position);
             if(distance <= attackDistance)
@@ -117,6 +132,17 @@ public class MonsterCtrl : MonoBehaviour
                     animator.SetBool(hashAttack, true);
                     break;
                 case State.DIE:
+                    isDie = true;
+                    agent.isStopped = true;
+                    animator.SetTrigger(hashDie);
+                    GetComponent<CapsuleCollider>().enabled = false;
+
+                    // 주먹 콜라이더를 찾아 제거
+                    SphereCollider[] Fist = GetComponentsInChildren<SphereCollider>();
+                    foreach(var elem in Fist)
+                    {
+                        elem.enabled = false;
+                    }
                     break;
             }
             yield return new WaitForSeconds(0.3f);
@@ -135,6 +161,12 @@ public class MonsterCtrl : MonoBehaviour
             Vector3 pos = collision.GetContact(0).point;
             Quaternion rot = Quaternion.LookRotation(-collision.GetContact(0).normal);
             ShowBloodEffect(pos, rot);
+
+            hp -= DAMAGE;
+            if(hp <= 0)
+            {
+                state = State.DIE;
+            }
         }
     }
 
