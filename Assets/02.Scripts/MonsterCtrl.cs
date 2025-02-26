@@ -28,6 +28,8 @@ public class MonsterCtrl : MonoBehaviour
     private readonly int hashTrace = Animator.StringToHash("IsTrace");
     private readonly int hashAttack = Animator.StringToHash("IsAttack");
     private readonly int hashHit = Animator.StringToHash("Hit");
+    private readonly int hashPlayerDie = Animator.StringToHash("PlayerDie");
+    private readonly int hashSpeed = Animator.StringToHash("Speed");
     // Start is called before the first frame update
     void Start()
     {
@@ -131,5 +133,14 @@ public class MonsterCtrl : MonoBehaviour
         // 특정 tranform의 자식으로 붙이는 방식은 매우 유효, 하이라키 정리 및 같이 이동하기 편함
         GameObject blood = Instantiate<GameObject>(bloodEffect, pos, rot, monsterTr);
         Destroy(blood, 1.0f);
+    }
+
+    private void OnPlayerDie()
+    {
+        StopAllCoroutines();
+
+        agent.isStopped = true;
+        animator.SetFloat(hashSpeed, Random.Range(0.8f, 1.2f));
+        animator.SetTrigger(hashPlayerDie);
     }
 }

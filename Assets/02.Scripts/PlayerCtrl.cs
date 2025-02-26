@@ -84,6 +84,12 @@ public class PlayerCtrl : MonoBehaviour
 
     private void PlayerDie()
     {
-        Debug.Log("PlayerDie");
+        
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
+
+        foreach(GameObject monster in monsters)
+        {
+            monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+        }
     }
 }
