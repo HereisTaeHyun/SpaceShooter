@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
+using UnityEngine.UI;
+
+using Image = UnityEngine.UI.Image;
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -9,6 +13,7 @@ public class PlayerCtrl : MonoBehaviour
     private Animation anim;
     private readonly float initHP = 100.0f; // 초기 생명 값
     private const float DAMAGEHP = 10.0f;
+    private Image hpBar;
     #endregion
 
     #region public
@@ -24,6 +29,7 @@ public class PlayerCtrl : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start() //Start는 void 대신 IEnumerator로 사용 가능
     {
+        hpBar = GameObject.FindGameObjectWithTag("HP_BAR")?.GetComponent<Image>();
         currentHP = initHP;
         tr = GetComponent<Transform>();
         anim = GetComponent<Animation>();
@@ -82,12 +88,21 @@ public class PlayerCtrl : MonoBehaviour
         if(currentHP >= 0 && coll.CompareTag("PUNCH"))
         {
             currentHP -= DAMAGEHP;
+            DisplayHealth();
             Debug.Log($"PlayerHP = {currentHP/initHP}");
 
             if (currentHP <= 0.0f)
             {
                 PlayerDie();
             }
+        }
+    }
+
+    private void DisplayHealth()
+    {
+        if(hpBar != null)
+        {
+            hpBar.fillAmount = currentHP / initHP;
         }
     }
 
