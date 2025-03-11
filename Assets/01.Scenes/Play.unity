@@ -2010,6 +2010,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fa7a16f54a0252438cbcd9e0ca454d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  points: []
+  monster: {fileID: 5355676826646651295, guid: 1879618dd7a30304aa998549d5f765fe, type: 3}
+  creatTime: 3
 --- !u!4 &1091798116
 Transform:
   m_ObjectHideFlags: 0

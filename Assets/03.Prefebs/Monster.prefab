@@ -1301,7 +1301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
-  traceDistance: 10
+  traceDistance: 50
   attackDistance: 2
   isDie: 0
 --- !u!1 &5355676826646651297

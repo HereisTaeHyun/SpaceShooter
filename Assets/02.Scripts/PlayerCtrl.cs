@@ -118,5 +118,6 @@ public class PlayerCtrl : MonoBehaviour
         // 주인공 사망 이벤트 호출
         GetComponent<FireCtrl>().OnPlayerDie();
         OnPlayerDie();
+        GameManager.instance.IsGameOver = true;
     }
 }
