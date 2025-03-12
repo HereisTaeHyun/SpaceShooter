@@ -21,12 +21,13 @@ public class MonsterCtrl : MonoBehaviour
     #endregion
 
     #region private
+    private const int MAX_HP = 100;
     private const int DAMAGE = 10;
     private Transform monsterTr;
     private Transform playerTr;
     private NavMeshAgent agent;
     private Animator animator;
-    private int hp = 100;
+    private int hp = MAX_HP;
 
     // 혈흔 효과 프리펩
     private GameObject bloodEffect;
@@ -41,33 +42,33 @@ public class MonsterCtrl : MonoBehaviour
     private readonly int hashDie = Animator.StringToHash("Die");
     #endregion
     // Start is called before the first frame update
-    void Start()
+
+    void Awake()
     {
-        // MonsterTr, PlayerTr을 agent의 destination에 할당
         monsterTr = GetComponent<Transform>();
-        playerTr = GameObject.FindGameObjectWithTag("PLAYER").GetComponent<Transform>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+
+        // MonsterTr, PlayerTr을 agent의 destination에 할당
+        playerTr = GameObject.FindGameObjectWithTag("PLAYER").GetComponent<Transform>();
+
+        // 피격시 보일 이펙트
         bloodEffect = Resources.Load<GameObject>("BloodSprayEffect");
-
-        // 몬스터 상태 체크 코루틴 호출
-        StartCoroutine(CheckMonsterState());
-        StartCoroutine(MonsterAction());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     // OnEnable, OnDisable에서 이벤트 함수 연결 및 해제
     void OnEnable()
     {
+        // OnPlayerDie 이벤트에 함수 등록
         PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+        // 몬스터 상태 체크 코루틴 호출
+        StartCoroutine(CheckMonsterState());
+        StartCoroutine(MonsterAction());
     }
 
     void OnDisable()
     {
+        // OnPlayerDie 이벤트에 함수 제거
         PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
     }
 
@@ -138,11 +139,23 @@ public class MonsterCtrl : MonoBehaviour
                     GetComponent<CapsuleCollider>().enabled = false;
 
                     // 주먹 콜라이더를 찾아 제거
-                    SphereCollider[] Fist = GetComponentsInChildren<SphereCollider>();
-                    foreach(var elem in Fist)
+                    SphereCollider[] Fists = GetComponentsInChildren<SphereCollider>();
+                    foreach(var elem in Fists)
                     {
                         elem.enabled = false;
                     }
+
+                    // 일정 시간 대기, 초기 상태로 원복 후 pool로 되돌리기
+                    yield return new WaitForSeconds(3.0f);
+                    hp = MAX_HP;
+                    isDie = false;
+                    state = State.IDLE;
+                    GetComponent<CapsuleCollider>().enabled = true;
+                    foreach(var elem in Fists)
+                    {
+                        elem.enabled = true;
+                    }
+                    this.gameObject.SetActive(false);
                     break;
             }
             yield return new WaitForSeconds(0.3f);
