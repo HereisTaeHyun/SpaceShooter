@@ -23,6 +23,7 @@ public class MonsterCtrl : MonoBehaviour
     #region private
     private const int MAX_HP = 100;
     private const int DAMAGE = 10;
+    private const int KILLSCORE = 50;
     private Transform monsterTr;
     private Transform playerTr;
     private NavMeshAgent agent;
@@ -179,6 +180,7 @@ public class MonsterCtrl : MonoBehaviour
             if(hp <= 0)
             {
                 state = State.DIE;
+                GameManager.instance.DisplayScore(KILLSCORE);
             }
         }
     }

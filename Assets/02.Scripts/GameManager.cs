@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -11,8 +12,12 @@ public class GameManager : MonoBehaviour
     // 풀에 생성할 몬스터 최대 갯수
     public int maxMonsters = 10;
     public float creatTime = 3.0f;
+    public TMP_Text scoreText;
+    public GameObject gameoverPanel;
 
+    private const int MAXSCORE = 99999;
     private bool isGameOver;
+    private int totScore;
 
     // 싱글톤 선언
     public static GameManager instance = null;
@@ -56,6 +61,13 @@ public class GameManager : MonoBehaviour
 
         // 반복 생성
         InvokeRepeating(nameof(CreatMonster), 2.0f, creatTime);
+
+        // UI 초기화
+        gameoverPanel.SetActive(false);
+        totScore = PlayerPrefs.GetInt("TOTSCORE", 0);
+        DisplayScore(0);
+
+        PlayerCtrl.OnPlayerDie += this.DisplayGameOver;
     }
 
     // 몬스터 풀 제작
@@ -90,5 +102,26 @@ public class GameManager : MonoBehaviour
         GameObject selectedMonter = GetMonsterInPool();
         selectedMonter?.transform.SetPositionAndRotation(points[idx].position, points[idx].rotation);
         selectedMonter?.SetActive(true);
+    }
+
+    // 스코어보드 출력자
+    public void DisplayScore(int score)
+    {
+        totScore += score;
+        if(totScore < MAXSCORE)
+        {
+            scoreText.text = $"<color=#00ff00>SCORE : </color><color=#ff0000>{totScore:#,##0}</color>";
+            PlayerPrefs.SetInt("TOTSCORE", totScore);
+        }
+        else
+        {
+            scoreText.text = $"<color=#00ff00>SCORE : </color><color=#ff0000>{MAXSCORE:#,##0}</color>";
+            PlayerPrefs.SetInt("TOTSCORE", MAXSCORE);
+        }
+    }
+
+    public void DisplayGameOver()
+    {
+        gameoverPanel.SetActive(true);
     }
 }
