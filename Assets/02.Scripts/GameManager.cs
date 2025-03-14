@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -108,16 +109,20 @@ public class GameManager : MonoBehaviour
     public void DisplayScore(int score)
     {
         totScore += score;
-        if(totScore < MAXSCORE)
+        
+        if(totScore > MAXSCORE)
         {
-            scoreText.text = $"<color=#00ff00>SCORE : </color><color=#ff0000>{totScore:#,##0}</color>";
-            PlayerPrefs.SetInt("TOTSCORE", totScore);
+            totScore = MAXSCORE;
         }
-        else
-        {
-            scoreText.text = $"<color=#00ff00>SCORE : </color><color=#ff0000>{MAXSCORE:#,##0}</color>";
-            PlayerPrefs.SetInt("TOTSCORE", MAXSCORE);
-        }
+        scoreText.text = $"<color=#00ff00>SCORE : </color><color=#ff0000>{totScore:#,##0}</color>";
+        PlayerPrefs.SetInt("TOTSCORE", totScore);
+    }
+
+    [MenuItem("SpaceShooterMenu/Reset Score")]
+    private static void ResetScore()
+    {
+        PlayerPrefs.SetInt("TOTSCORE", 0);
+        Debug.Log("Score has been reset");
     }
 
     public void DisplayGameOver()

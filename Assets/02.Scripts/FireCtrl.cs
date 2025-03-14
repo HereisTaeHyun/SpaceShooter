@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 // 반드시 필요한 컴포넌트를 삭제 안되도록 하는 어트리뷰트
 [RequireComponent(typeof(AudioSource))]
 public class FireCtrl : MonoBehaviour
 {
+    public const float MAXRANGE = 40.0f;
     public GameObject bullet;
     public Transform firePos;
     public AudioClip fireSfx;
@@ -14,6 +16,7 @@ public class FireCtrl : MonoBehaviour
     // 오디오 컴포넌트
     private new AudioSource audio;
     private MeshRenderer muzzleFlash;
+    private RaycastHit raycastHit;
 
     void Start()
     {
@@ -46,9 +49,18 @@ public class FireCtrl : MonoBehaviour
         {
             return;
         }
+
+        Debug.DrawRay(firePos.position, firePos.forward * MAXRANGE, Color.green);
+
         if(Input.GetMouseButtonDown(0))
         {
             Fire();
+
+            if(Physics.Raycast(firePos.position, firePos.forward, out raycastHit, MAXRANGE,  1 << 6))
+            {
+                Debug.Log($"{raycastHit.transform.name}");
+                raycastHit.transform.GetComponent<MonsterCtrl>().OnDamage(raycastHit.point, raycastHit.normal);
+            }
         }
     }
 
