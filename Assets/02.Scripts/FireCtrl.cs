@@ -57,7 +57,6 @@ public class FireCtrl : MonoBehaviour
             Fire();
             if(Physics.Raycast(firePos.position, firePos.forward, out raycastHit, MAXRANGE, 1 << LayerMask.NameToLayer("MONSTERBODY")))
             {
-                Debug.Log($"{raycastHit.transform.name}");
                 raycastHit.transform.GetComponent<MonsterCtrl>().OnDamage(raycastHit.point, raycastHit.normal);
             }
         }

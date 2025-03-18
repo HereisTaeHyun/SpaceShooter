@@ -50,6 +50,8 @@ public class MonsterCtrl : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
 
+        agent.updateRotation = false;
+
         // MonsterTr, PlayerTr을 agent의 destination에 할당
         playerTr = GameObject.FindGameObjectWithTag("PLAYER").GetComponent<Transform>();
 
@@ -71,6 +73,17 @@ public class MonsterCtrl : MonoBehaviour
     {
         // OnPlayerDie 이벤트에 함수 제거
         PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
+    }
+
+    private void Update()
+    {
+        if(agent.remainingDistance >= 2.0f)
+        {
+            // 이동 방향과 회전 각도룰 구해 선형보간하여 회전
+            Vector3 direction = agent.desiredVelocity;
+            Quaternion rot = Quaternion.LookRotation(direction);
+            monsterTr.rotation = Quaternion.Slerp(monsterTr.rotation, rot, Time.deltaTime * 10.0f);
+        }
     }
 
     private IEnumerator CheckMonsterState()
