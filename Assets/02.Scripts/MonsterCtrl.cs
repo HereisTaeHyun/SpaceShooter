@@ -194,10 +194,11 @@ public class MonsterCtrl : MonoBehaviour
         ShowBloodEffect(pos, rot);
 
         hp -= DAMAGE;
-        if(hp <= 0)
+        if(hp <= 0 && state != State.DIE)
         {
             state = State.DIE;
             GameManager.instance.DisplayScore(KILLSCORE);
+            GameManager.instance.KillCount += 1;
         }
     }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         // Unity Action 이용
-        action = () => OnButtonClick(startButton.name);
+        action = () => OnStartClick();
         startButton.onClick.AddListener(action);
 
         // 무명 메서드 이용, 요즘은 잘 사용되지 않음
@@ -30,5 +31,11 @@ public class UIManager : MonoBehaviour
     public void OnButtonClick(string msg)
     {
         Debug.Log($"메시지 클릭 발생 : {msg}");
+    }
+
+    public void OnStartClick()
+    {
+        SceneManager.LoadScene("Level_01");
+        SceneManager.LoadScene("Play", LoadSceneMode.Additive);
     }
 }

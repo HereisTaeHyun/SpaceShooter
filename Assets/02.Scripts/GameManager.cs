@@ -14,11 +14,26 @@ public class GameManager : MonoBehaviour
     public int maxMonsters = 10;
     public float creatTime = 3.0f;
     public TMP_Text scoreText;
+    public TMP_Text killText;
     public GameObject gameoverPanel;
 
     private const int MAXSCORE = 99999;
     private bool isGameOver;
     private int totScore;
+    private int killCount;
+    public int KillCount
+    {
+        get { return killCount; }
+        set
+        {
+            killCount = value;
+            if(killCount > 99)
+            {
+                killCount = 99;
+            }
+            DisplayKillCount();
+        }
+    }
 
     // 싱글톤 선언
     public static GameManager instance = null;
@@ -123,6 +138,11 @@ public class GameManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("TOTSCORE", 0);
         Debug.Log("Score has been reset");
+    }
+
+    private void DisplayKillCount()
+    {
+        killText.text = $"<color=#00ff00>KILL : </color><color=#ff0000>{killCount:#,##0}</color>";
     }
 
     public void DisplayGameOver()
